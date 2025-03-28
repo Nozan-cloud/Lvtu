@@ -3,15 +3,17 @@ server:
 spring:
   application:
     name: Lvtu
+  profiles:
+    active: dev
   datasource:
-    driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/Lvtu?useSSL=false&serverTimezone=UTC
-    username: root
-    password: 1234
+    driver-class-name: ${lvtu.datasource.driver-class-name}
+    url: jdbc:mysql://${lvtu.datasource.host}:${lvtu.datasource.port}/${lvtu.datasource.database}?useSSL=false&serverTimezone=UTC
+    username: ${lvtu.datasource.username}
+    password: ${lvtu.datasource.password}
   redis:
-    host: 127.0.0.1
-    port: 6379
-    password: 123456
+    host: ${lvtu.redis.host}
+    port: ${lvtu.redis.port}
+    password: ${lvtu.redis.password}
     lettuce:
       pool:
         max-active: 10
