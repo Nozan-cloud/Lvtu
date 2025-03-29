@@ -63,11 +63,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         stringRedisTemplate.opsForValue().set(LOGIN_CODE_KEY + phone, code, LOGIN_CODE_TTL, TimeUnit.MINUTES);
 
         // 5.发送验证码
-        Map<String, String> request = new HashMap<>();Map<String, String> params = new HashMap<>();
-        params.put("code", code);  // 变量名必须和模板里的 ${code} 一致
-        request.put("phoneNumbers", phone);
-        request.put("templateParam", JSON.toJSONString(params));
-        aliyunSmsHandler.sendSms(request);
+//        Map<String, String> request = new HashMap<>();Map<String, String> params = new HashMap<>();
+//        params.put("code", code);  // 变量名必须和模板里的 ${code} 一致
+//        request.put("phoneNumbers", phone);
+//        request.put("templateParam", JSON.toJSONString(params));
+//        aliyunSmsHandler.sendSms(request);
         log.debug("发送短信验证码成功，验证码：{}", code);
         // 返回ok
         return Result.ok();

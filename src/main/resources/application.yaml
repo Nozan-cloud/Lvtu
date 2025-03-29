@@ -7,7 +7,7 @@ spring:
     active: dev
   datasource:
     driver-class-name: ${lvtu.datasource.driver-class-name}
-    url: jdbc:mysql://${lvtu.datasource.host}:${lvtu.datasource.port}/${lvtu.datasource.database}?useSSL=false&serverTimezone=UTC
+    url: jdbc:mysql://${lvtu.datasource.host}:${lvtu.datasource.port}/${lvtu.datasource.database}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
     username: ${lvtu.datasource.username}
     password: ${lvtu.datasource.password}
   redis:
