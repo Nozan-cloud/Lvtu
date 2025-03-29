@@ -1,5 +1,6 @@
 package com.Lvtu.service;
 
+import com.Lvtu.dto.UserDTO;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.Lvtu.dto.LoginFormDTO;
 import com.Lvtu.dto.Result;
@@ -24,5 +25,6 @@ public interface IUserService extends IService<User> {
     Result sign();
 
     Result signCount();
+
 
 }

@@ -16,4 +16,9 @@ public class UserHolder {
     public static void removeUser(){
         tl.remove();
     }
+
+    public static boolean isAdmin() {
+        UserDTO user = getUser();
+        return user != null && user.isAdmin();
+    }
 }

@@ -10,6 +10,7 @@ import com.Lvtu.service.IBlogService;
 import com.Lvtu.service.IUserService;
 import com.Lvtu.utils.SystemConstants;
 import com.Lvtu.utils.UserHolder;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -25,6 +26,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/blog")
+@Slf4j
 public class BlogController {
 
     @Resource
@@ -36,6 +38,7 @@ public class BlogController {
     public Result saveBlog(@RequestBody Blog blog) {
         // 获取登录用户
         UserDTO user = UserHolder.getUser();
+        log.info("user:{}", user);
         blog.setUserId(user.getId());
         // 保存探店博文
         blogService.save(blog);
