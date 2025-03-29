@@ -4,6 +4,9 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.RandomUtil;
+import com.Lvtu.handler.AliyunSmsHandler;
+import com.Lvtu.properties.AliyunSmsProperties;
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.Lvtu.dto.LoginFormDTO;
 import com.Lvtu.dto.Result;
@@ -14,6 +17,7 @@ import com.Lvtu.service.IUserService;
 import com.Lvtu.utils.RegexUtils;
 import com.Lvtu.utils.UserHolder;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.BitFieldSubCommands;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -45,6 +49,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Resource
     private StringRedisTemplate stringRedisTemplate;
 
+    @Autowired
+    private AliyunSmsHandler aliyunSmsHandler;
+
     @Override
     public Result sendCode(String phone, HttpSession session) {
         // 1.校验手机号
@@ -59,6 +66,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         stringRedisTemplate.opsForValue().set(LOGIN_CODE_KEY + phone, code, LOGIN_CODE_TTL, TimeUnit.MINUTES);
 
         // 5.发送验证码
+        Map<String, String> request = new HashMap<>();Map<String, String> params = new HashMap<>();
+        params.put("code", code);  // 变量名必须和模板里的 ${code} 一致
+        request.put("phoneNumbers", phone);
+        request.put("templateParam", JSON.toJSONString(params));
+        aliyunSmsHandler.sendSms(request);
         log.debug("发送短信验证码成功，验证码：{}", code);
         // 返回ok
         return Result.ok();

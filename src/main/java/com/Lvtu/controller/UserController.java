@@ -7,14 +7,17 @@ import com.Lvtu.dto.Result;
 import com.Lvtu.dto.UserDTO;
 import com.Lvtu.entity.User;
 import com.Lvtu.entity.UserInfo;
+import com.Lvtu.handler.AliyunSmsHandler;
 import com.Lvtu.service.IUserInfoService;
 import com.Lvtu.service.IUserService;
 import com.Lvtu.utils.UserHolder;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
+import java.util.Map;
 
 /**
  * <p>
@@ -33,7 +36,6 @@ public class UserController {
 
     @Resource
     private IUserInfoService userInfoService;
-
     /**
      * 发送手机验证码
      */
@@ -42,7 +44,6 @@ public class UserController {
         // 发送短信验证码并保存验证码
         return userService.sendCode(phone, session);
     }
-
     /**
      * 登录功能
      * @param loginForm 登录参数，包含手机号、验证码；或者手机号、密码

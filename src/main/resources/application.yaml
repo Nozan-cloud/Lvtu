@@ -27,3 +27,12 @@ mybatis-plus:
 logging:
   level:
     com.Lvtu: debug
+
+#阿里云短信配置
+aliyun:
+  sms:
+    access-key-id: ${lvtu.sms.access-key-id}      # 从环境变量或配置中心获取
+    access-key-secret: ${lvtu.sms.access-key-secret} # 从环境变量或配置中心获取
+    sign-name: ${lvtu.sms.sign-name}                              # 测试阶段使用阿里云提供的测试签名
+    template-code: ${lvtu.sms.template-code}                  # 测试模板CODE
+    region-id: ${lvtu.alioss.endpoint}                        # 默认杭州区域
