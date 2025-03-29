@@ -3,7 +3,9 @@ package com.Lvtu.utils;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.Lvtu.dto.UserDTO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,7 +15,8 @@ import java.util.concurrent.TimeUnit;
 
 import static com.Lvtu.utils.RedisConstants.LOGIN_USER_KEY;
 import static com.Lvtu.utils.RedisConstants.LOGIN_USER_TTL;
-
+@Component
+@Slf4j
 public class RefreshTokenInterceptor implements HandlerInterceptor {
 
     private StringRedisTemplate stringRedisTemplate;
@@ -24,6 +27,7 @@ public class RefreshTokenInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        log.info("RefreshTokenInterceptor 被调用，路径: {}", request.getRequestURI());
         // 1.获取请求头中的token
         String token = request.getHeader("authorization");
         if (StrUtil.isBlank(token)) {
