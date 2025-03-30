@@ -74,7 +74,11 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
                         "/upload/**",
                         "/blog/hot",
                         "/user/code",
-                        "/user/login"
+                        "/user/login",
+                        "/doc.html",
+                        "/webjars/js/**",
+                        "/swagger-resources",
+                        "/v2/api-docs"
                 ).order(1);
     }
 }
