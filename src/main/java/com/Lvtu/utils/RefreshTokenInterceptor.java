@@ -31,8 +31,12 @@ public class RefreshTokenInterceptor implements HandlerInterceptor {
         // 1.获取请求头中的token
         String token = request.getHeader("authorization");
         if (StrUtil.isBlank(token)) {
-            return true;
+            token = request.getHeader("at"); // 兼容 Knife4j 的默认头
+            if (StrUtil.isBlank(token)) {
+                return true;
+            }
         }
+        log.info("RefreshTokenInterceptor token: {}", token);
         // 2.基于TOKEN获取redis中的用户
         String key  = LOGIN_USER_KEY + token;
         Map<Object, Object> userMap = stringRedisTemplate.opsForHash().entries(key);

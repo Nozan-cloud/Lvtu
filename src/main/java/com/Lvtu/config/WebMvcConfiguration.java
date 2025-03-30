@@ -1,10 +1,14 @@
 package com.Lvtu.config;
 
+import com.Lvtu.utils.LoginInterceptor;
+import com.Lvtu.utils.RefreshTokenInterceptor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -13,6 +17,8 @@ import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
+
+import javax.annotation.Resource;
 //http://localhost:8081/doc.html#/home  接口网址
 
 /**
@@ -21,7 +27,8 @@ import springfox.documentation.spring.web.plugins.Docket;
 @Configuration
 @Slf4j
 public class WebMvcConfiguration extends WebMvcConfigurationSupport {
-
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
 
     /**
      * 通过knife4j生成接口文档
@@ -54,8 +61,20 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
         registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
     }
 
-
-
-
-
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        // token刷新的拦截器
+        registry.addInterceptor(new RefreshTokenInterceptor(stringRedisTemplate)).addPathPatterns("/**").order(0);
+        // 登录拦截器
+        registry.addInterceptor(new LoginInterceptor())
+                .excludePathPatterns(
+                        "/shop/**",
+                        "/voucher/**",
+                        "/shop-type/**",
+                        "/upload/**",
+                        "/blog/hot",
+                        "/user/code",
+                        "/user/login"
+                ).order(1);
+    }
 }
