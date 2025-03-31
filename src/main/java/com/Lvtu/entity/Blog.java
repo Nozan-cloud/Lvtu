@@ -32,10 +32,7 @@ public class Blog implements Serializable {
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
-    /**
-     * 商户id
-     */
-    private Long shopId;
+
     /**
      * 用户id
      */
