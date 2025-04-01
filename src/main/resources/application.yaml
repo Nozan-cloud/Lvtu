@@ -36,3 +36,9 @@ aliyun:
     sign-name: ${lvtu.sms.sign-name}                              # 测试阶段使用阿里云提供的测试签名
     template-code: ${lvtu.sms.template-code}                  # 测试模板CODE
     region-id: ${lvtu.alioss.endpoint}                        # 默认杭州区域
+rabbitmq:
+  host: ${lvtu.rabbitmq.host}
+  port: ${lvtu.rabbitmq.port}
+  virtual-host: ${lvtu.rabbitmq.virtual-host}
+  username: ${lvtu.rabbitmq.username}
+  password: ${lvtu.rabbitmq.password}

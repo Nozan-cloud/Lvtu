@@ -16,6 +16,8 @@ import com.Lvtu.service.IFollowService;
 import com.Lvtu.service.IUserService;
 import com.Lvtu.utils.SystemConstants;
 import com.Lvtu.utils.UserHolder;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.Lvtu.utils.RabbitMQConstants.BLOG_NOTIFICATION_EXCHANGE;
+import static com.Lvtu.utils.RabbitMQConstants.BLOG_NOTIFICATION_ROUTING_KEY;
 import static com.Lvtu.utils.RedisConstants.BLOG_LIKED_KEY;
 import static com.Lvtu.utils.RedisConstants.FEED_KEY;
 
@@ -49,6 +53,9 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
 
     @Resource
     private IFollowService followService;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
     @Override
     public Result queryHotBlog(Integer current) {
@@ -168,18 +175,21 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
         if(!isSuccess){
             return Result.fail("新增笔记失败!");
         }
-        // 3.查询笔记作者的所有粉丝 select * from tb_follow where follow_user_id = ?
-        List<Follow> follows = followService.query().eq("follow_user_id", user.getId()).list();
-        // 4.推送笔记id给所有粉丝
-        for (Follow follow : follows) {
-            // 4.1.获取粉丝id
-            Long userId = follow.getUserId();
-            // 4.2.推送
-            String key = FEED_KEY + userId;
-            stringRedisTemplate.opsForZSet().add(key, blog.getId().toString(), System.currentTimeMillis());
-        }
-        // 5.返回id
+        //发送消息到RabbitMQ队列
+        rabbitTemplate.convertAndSend(BLOG_NOTIFICATION_EXCHANGE, BLOG_NOTIFICATION_ROUTING_KEY, blog.getId());
         return Result.ok(blog.getId());
+//        // 3.查询笔记作者的所有粉丝 select * from tb_follow where follow_user_id = ?
+//        List<Follow> follows = followService.query().eq("follow_user_id", user.getId()).list();
+//        // 4.推送笔记id给所有粉丝
+//        for (Follow follow : follows) {
+//            // 4.1.获取粉丝id
+//            Long userId = follow.getUserId();
+//            // 4.2.推送
+//            String key = FEED_KEY + userId;
+//            stringRedisTemplate.opsForZSet().add(key, blog.getId().toString(), System.currentTimeMillis());
+//        }
+//        // 5.返回id
+//        return Result.ok(blog.getId());
     }
 
     @Override
